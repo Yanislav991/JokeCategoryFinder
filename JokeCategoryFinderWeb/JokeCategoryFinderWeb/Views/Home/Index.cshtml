@@ -1,0 +1,38 @@
+﻿@model JokePrediction?
+<script>
+    function onSubmit(e) {
+        e.preventDefault();
+        postData({
+            joke:"Hey"
+        });
+    }
+    async function postData(data){
+        await fetch('/Home/Index', {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+</script>
+
+<form onsubmit="onSubmit(event)">
+    <div class="mb-6">
+        <label class="form-label">Joke: </label>
+        <textarea class="form-control" rows="7"></textarea>
+        <div class="form-text">
+            Try out the joke prediction. Insert a joke similar to the following one: 
+            asd
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
