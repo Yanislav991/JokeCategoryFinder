@@ -28,8 +28,9 @@ namespace JokeCategoryFinderWeb.Services
             var data = GetData();
             IDataView trainingData = context.Data.LoadFromEnumerable<JokeModel>(data);
             var pipeline = context.Transforms.Conversion.MapValueToKey(inputColumnName: "Category", outputColumnName: "Label")
-                .Append(context.Transforms.Text.FeaturizeText("Features", "Category"))
-                .Append(context.MulticlassClassification.Trainers.LbfgsMaximumEntropy())
+                .Append(context.Transforms.Text.FeaturizeText(inputColumnName: "Joke", outputColumnName: "JokeFeaturized"))
+                //.Append(context.Transforms.Concatenate("Features", "CategoryFeaturized"))
+                .Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy("Label", "JokeFeaturized"))
                 .Append(context.Transforms.Conversion.MapKeyToValue("PredictedLabel"));
 
             var trainedModel = pipeline.Fit(trainingData);
@@ -39,7 +40,7 @@ namespace JokeCategoryFinderWeb.Services
         {
             var fileData = File.ReadAllText(DataFilePath);
             var deserializedObj = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(fileData)
-                                .Where(x => x.Value.Count() > 30);
+                                .Where(x => x.Value.Count() > 70);
             var result = new List<JokeModel>();
 
             foreach (var category in deserializedObj)

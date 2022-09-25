@@ -20,7 +20,7 @@ namespace JokeCategoryFinderWeb.Controllers
         public IActionResult Index([FromBody] JokeResponseModel jokeResponseModel)
         {
             var result = _jokeFinderService.GetModelOutput(jokeResponseModel.joke);
-            return Json(new { Category = result.Category, Percent = result.Score.Max() });
+            return Json(new { Category = result.Category, Percent = String.Format("Value: {0:P2}.", result.Score.Max()) });
         }
 
     }

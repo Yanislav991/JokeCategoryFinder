@@ -1,14 +1,14 @@
-﻿@model JokePrediction?
-<script>
+﻿<script>
     function onSubmit(e) {
         e.preventDefault();
-        postData({
-            joke:"Hey"
-        });
+        let data = {
+            joke: document.getElementById("joke").value
+        }
+        postData(data);
     }
-    async function postData(data){
+    async function postData(data) {
         await fetch('/Home/Index', {
-            method: 'POST', 
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -16,7 +16,9 @@
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log('Success:', data);
+                console.log(data)
+                var categoryText = document.getElementById('categoryText');
+                categoryText.textContent = `Most suitable category - '${data.category}'. Probability - '${data.percent}'`;
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -24,15 +26,16 @@
     }
 </script>
 
-<form onsubmit="onSubmit(event)">
-    <div class="mb-6">
+<div class="col-md-8 offset-md-2">
+    <form onsubmit="onSubmit(event)">
         <label class="form-label">Joke: </label>
-        <textarea class="form-control" rows="7"></textarea>
+        <textarea class="form-control" rows="7" id="joke"></textarea>
         <div class="form-text">
-            Try out the joke prediction. Insert a joke similar to the following one: 
+            Try out the joke prediction. Insert a joke similar to the following one:
             asd
         </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <p class="card-text" id="categoryText"></p>
+</div>
 
